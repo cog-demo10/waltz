@@ -41,38 +41,38 @@ git --version
 brew install git
 ```
 
-# Step 3. Install JDK 17
+# Step 3. Install JDK 21
 
-Waltz requires Java Development Kit 17 (OpenJDK). **Java 17 is required** - newer versions (18+) may cause annotation processing failures during compilation.
+Waltz requires Java Development Kit 21 (OpenJDK). **Java 21 is required** - older versions are rejected by the build and newer versions are untested and may cause annotation processing failures during compilation.
 
-**Check if JDK 17 is installed:**
+**Check if JDK 21 is installed:**
 ```bash
 java -version
 ```
 
-**Install JDK 17** (if not already installed):
+**Install JDK 21** (if not already installed):
 ```bash
-brew install openjdk@17
+brew install openjdk@21
 ```
 
 **Set JAVA_HOME** (add to your `~/.zshrc` or `~/.bashrc`):
 ```bash
-export JAVA_HOME=/opt/homebrew/opt/openjdk@17
+export JAVA_HOME=/opt/homebrew/opt/openjdk@21
 export PATH="$JAVA_HOME/bin:$PATH"
 ```
 
-> **Important:** If you have multiple Java versions installed, Maven will use whatever version is set in `JAVA_HOME`. If you see compilation errors about missing `Immutable*` classes (e.g., `ImmutableEntityReference`, `TransportKindValue`), it's likely because you're using a Java version newer than 17. Verify with `mvn --version` that Java 17 is being used.
+> **Important:** If you have multiple Java versions installed, Maven will use whatever version is set in `JAVA_HOME`. If you see compilation errors about missing `Immutable*` classes (e.g., `ImmutableEntityReference`, `TransportKindValue`), it's likely because you're using a Java version other than 21. Verify with `mvn --version` that Java 21 is being used.
 
 # Step 4. Install Maven
 
-Maven is used to build Waltz. It must be configured to use JDK 17.
+Maven is used to build Waltz. It must be configured to use JDK 21.
 
 **Check if Maven is installed:**
 ```bash
 mvn --version
 ```
 
-Verify the output shows `Java version: 17.x.x`. If it shows a different Java version, ensure `JAVA_HOME` is set correctly.
+Verify the output shows `Java version: 21.x.x`. If it shows a different Java version, ensure `JAVA_HOME` is set correctly.
 
 **Install Maven** (if not already installed):
 ```bash

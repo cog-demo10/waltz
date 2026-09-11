@@ -4,7 +4,7 @@
 
 ## Pre Requisites
 
-* Java 17
+* Java 21
 * Maven 3.5
 * Tomcat 10
 

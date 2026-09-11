@@ -8,7 +8,7 @@ Waltz is built using [Maven](https://maven.apache.org/).
 
 - [Git](https://git-scm.com/)
 - [Maven 3](https://maven.apache.org/)
-- [JDK 17](http://www.oracle.com/technetwork/java/javase/overview/index.html) (see note below)
+- [JDK 21](http://www.oracle.com/technetwork/java/javase/overview/index.html) (see note below)
 - [Node](https://nodejs.org/en/)
   - [NPM](https://www.npmjs.com/) v6+
 - [Sass](http://sass-lang.com/)
@@ -21,7 +21,7 @@ Waltz is built using [Maven](https://maven.apache.org/).
 
 
 **Note**:
-When developing on JDK 17 please ensure all class imports are explicit.
+When developing on JDK 17 and above please ensure all class imports are explicit.
 This is to prevent collisions between `java.lang.Record` and `org.jooq.Record` which can cause compilation errors (see issue: [#6678](https://github.com/finos/waltz/issues/6678))
 
 
@@ -147,12 +147,12 @@ mvn versions:commit
 ```
 
 # Technical Upgrade Info :
-# Java 17 Upgrade
+# Java 21 Upgrade
 
-- Waltz has been upgraded to run on Java 17, moving from Java 8.
+- Waltz has been upgraded to run on Java 21, moving from Java 17.
 - Developer Actions
-    - Please ensure your local development environment is configured to use JDK 17.
-    - Update your IDE settings (e.g., IntelliJ, Eclipse) to point to the JDK 17 installation.
+    - Please ensure your local development environment is configured to use JDK 21.
+    - Update your IDE settings (e.g., IntelliJ, Eclipse) to point to the JDK 21 installation.
 
 ## Framework Upgrade
 - The web framework, Spark Java, has been upgraded from version 2.7.1 to 2.9.4.
