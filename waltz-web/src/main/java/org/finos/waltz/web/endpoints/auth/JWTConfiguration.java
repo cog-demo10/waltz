@@ -20,6 +20,7 @@ package org.finos.waltz.web.endpoints.auth;
 
 import com.auth0.jwt.algorithms.Algorithm;
 import org.finos.waltz.common.StringUtilities;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -43,6 +44,7 @@ public class JWTConfiguration {
     private final byte[] secret;
 
 
+    @Autowired
     public JWTConfiguration(@Value("${" + PROPERTY_NAME + ":#{null}}") String configuredSecret) {
         this(configuredSecret, System.getenv(ENV_VAR_NAME));
     }
