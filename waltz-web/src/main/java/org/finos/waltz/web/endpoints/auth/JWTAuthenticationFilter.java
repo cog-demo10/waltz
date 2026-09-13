@@ -41,14 +41,11 @@ public class JWTAuthenticationFilter extends WaltzFilter {
     private final JWTVerifier verifier512;
 
 
-    public JWTAuthenticationFilter(SettingsService settingsService) {
+    public JWTAuthenticationFilter(SettingsService settingsService, JWTConfiguration jwtConfiguration) {
         super(settingsService);
         try {
-            Algorithm algorithm256 = Algorithm.HMAC256(JWTUtilities.SECRET);
-            Algorithm algorithm512 = Algorithm.HMAC512(JWTUtilities.SECRET);
-
-            verifier256 = mkVerifier(algorithm256);
-            verifier512 = mkVerifier(algorithm512);
+            verifier256 = mkVerifier(jwtConfiguration.hmac256());
+            verifier512 = mkVerifier(jwtConfiguration.hmac512());
 
         } catch (Exception e) {
             LOG.error("Cannot create JWT Verifier, this is bad", e);
@@ -84,7 +81,7 @@ public class JWTAuthenticationFilter extends WaltzFilter {
     private JWTVerifier mkVerifier(Algorithm algorithm) {
         return JWT
                 .require(algorithm)
-                .withIssuer(JWTUtilities.ISSUER)
+                .withIssuer(JWTConfiguration.ISSUER)
                 .build();
     }
 

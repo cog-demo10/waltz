@@ -9,6 +9,10 @@ export DB_PASSWORD=${DB_PASSWORD:-"Waltz#123"}
 export DB_SCHEME=${DB_SCHEME:-"dbo"}
 export WALTZ_FROM_EMAIL=${WALTZ_FROM_EMAIL:-"help@finos.org"}
 export WALTZ_BASE_URL=${WALTZ_BASE_URL:-"http://127.0.0.1:8080/"}
+if [ -z "${WALTZ_JWT_SECRET}" ]; then
+    echo ">>> WALTZ_JWT_SECRET not set, generating a random JWT signing secret for this container (tokens will not survive a restart)."
+    export WALTZ_JWT_SECRET=$(head -c 48 /dev/urandom | base64 -w 0)
+fi
 export CHANGELOG_FILE=${CHANGELOG_FILE:-"/opt/waltz/liquibase/db.changelog-master.xml"}
 
 db_action () {

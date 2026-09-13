@@ -20,7 +20,6 @@ package org.finos.waltz.web.endpoints.auth;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.finos.waltz.service.settings.SettingsService;
 import org.slf4j.Logger;
@@ -37,12 +36,11 @@ public class DisallowAnonymousFilter extends WaltzFilter {
     private final JWTVerifier verifier;
 
 
-    public DisallowAnonymousFilter(SettingsService settingsService) {
+    public DisallowAnonymousFilter(SettingsService settingsService, JWTConfiguration jwtConfiguration) {
         super(settingsService);
         try {
-            Algorithm algorithm = Algorithm.HMAC256(JWTUtilities.SECRET);
-            verifier = JWT.require(algorithm)
-                    .withIssuer(JWTUtilities.ISSUER)
+            verifier = JWT.require(jwtConfiguration.hmac256())
+                    .withIssuer(JWTConfiguration.ISSUER)
                     .build(); //Reusable verifier instance
         } catch (Exception e) {
             LOG.error("Cannot create JWT Verifier, this is bad", e);

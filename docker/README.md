@@ -26,6 +26,7 @@ The default parameters are listed below:
 * `DB_SCHEME="waltz"`
 * `WALTZ_FROM_EMAIL="help@finos.org"`
 * `WALTZ_BASE_URL="http://127.0.0.1:8080/"`
+* `WALTZ_JWT_SECRET` (random per container start if not set; set it to a stable random value of at least 32 bytes so tokens survive restarts / are shared across instances)
 * `CHANGELOG_FILE=_FILE="/opt/waltz/liquibase/db.changelog-master.xml"`
 
 # Running
