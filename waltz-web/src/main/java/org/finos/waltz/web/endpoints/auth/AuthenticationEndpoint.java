@@ -67,16 +67,19 @@ public class AuthenticationEndpoint implements Endpoint {
     private final SettingsService settingsService;
     private final Filter filter;
     private final OAuthConfiguration oauthConfiguration;
+    private final JWTConfiguration jwtConfiguration;
 
 
     @Autowired
     public AuthenticationEndpoint(UserService userService,
                                   UserRoleService userRoleService,
                                   SettingsService settingsService,
-                                  OAuthConfiguration oauthConfiguration) {
+                                  OAuthConfiguration oauthConfiguration,
+                                  JWTConfiguration jwtConfiguration) {
         this.userService = userService;
         this.userRoleService = userRoleService;
         this.settingsService = settingsService;
+        this.jwtConfiguration = jwtConfiguration;
 
         this.filter = settingsService
                 .getValue(NamedSettings.authenticationFilter)
@@ -90,7 +93,7 @@ public class AuthenticationEndpoint implements Endpoint {
     private Supplier<Filter> createDefaultFilter() {
         return () -> {
             LOG.info("Using default (jwt) authentication filter");
-            return new JWTAuthenticationFilter(settingsService);
+            return new JWTAuthenticationFilter(settingsService, jwtConfiguration);
         };
     }
 
@@ -99,15 +102,30 @@ public class AuthenticationEndpoint implements Endpoint {
         try {
             LOG.info("Setting authentication filter to: " + className);
 
-            Filter filter = (Filter) Class
-                    .forName(className)
-                    .getConstructor(SettingsService.class)
-                    .newInstance(settingsService);
+            Class<?> filterClass = Class.forName(className);
+
+            Filter filter = hasConstructor(filterClass, SettingsService.class, JWTConfiguration.class)
+                    ? (Filter) filterClass
+                            .getConstructor(SettingsService.class, JWTConfiguration.class)
+                            .newInstance(settingsService, jwtConfiguration)
+                    : (Filter) filterClass
+                            .getConstructor(SettingsService.class)
+                            .newInstance(settingsService);
 
             return Optional.of(filter);
         } catch (Exception e) {
             LOG.error("Cannot instantiate authentication filter class: " + className, e);
             return Optional.empty();
+        }
+    }
+
+
+    private static boolean hasConstructor(Class<?> clazz, Class<?>... parameterTypes) {
+        try {
+            clazz.getConstructor(parameterTypes);
+            return true;
+        } catch (NoSuchMethodException e) {
+            return false;
         }
     }
 
@@ -121,14 +139,14 @@ public class AuthenticationEndpoint implements Endpoint {
             AuthenticationResponse authResponse = authenticate(login);
 
             if (authResponse.success()) {
-                Algorithm algorithmHS = Algorithm.HMAC512(JWTUtilities.SECRET);
+                Algorithm algorithmHS = jwtConfiguration.hmac512();
 
                 String[] roles = userRoleService
                         .getUserRoles(authResponse.waltzUserName())
                         .toArray(new String[0]);
 
                 String token = JWT.create()
-                        .withIssuer(JWTUtilities.ISSUER)
+                        .withIssuer(JWTConfiguration.ISSUER)
                         .withSubject(authResponse.waltzUserName())
                         .withArrayClaim("roles", roles)
                         .withClaim("displayName", login.userName())
@@ -144,7 +162,7 @@ public class AuthenticationEndpoint implements Endpoint {
 
         Spark.post(WebUtilities.mkPath(BASE_URL, "oauth"), (request, response) -> {
             // parse code response after successful authorization
-            Algorithm algorithmHS = Algorithm.HMAC512(JWTUtilities.SECRET);
+            Algorithm algorithmHS = jwtConfiguration.hmac512();
             String[] vals =  parseCodeResponse(request.body());
             String oauthCode = vals[0];
             String clientId = vals[1];
@@ -164,7 +182,7 @@ public class AuthenticationEndpoint implements Endpoint {
             LOG.info("login via sso for: email:" + email);
 
             String token = JWT.create()
-                    .withIssuer(JWTUtilities.ISSUER)
+                    .withIssuer(JWTConfiguration.ISSUER)
                     .withSubject(email)
                     .withArrayClaim("roles", roles)
                     .withClaim("displayName", name)
