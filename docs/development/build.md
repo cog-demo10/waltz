@@ -8,7 +8,7 @@ Waltz is built using [Maven](https://maven.apache.org/).
 
 - [Git](https://git-scm.com/)
 - [Maven 3](https://maven.apache.org/)
-- [JDK 17](http://www.oracle.com/technetwork/java/javase/overview/index.html) (see note below)
+- [JDK 21](http://www.oracle.com/technetwork/java/javase/overview/index.html) (see note below)
 - [Node](https://nodejs.org/en/)
   - [NPM](https://www.npmjs.com/) v6+
 - [Sass](http://sass-lang.com/)
@@ -21,7 +21,7 @@ Waltz is built using [Maven](https://maven.apache.org/).
 
 
 **Note**:
-When developing on JDK 17 please ensure all class imports are explicit.
+When developing on JDK 17+ please ensure all class imports are explicit.
 This is to prevent collisions between `java.lang.Record` and `org.jooq.Record` which can cause compilation errors (see issue: [#6678](https://github.com/finos/waltz/issues/6678))
 
 
@@ -147,6 +147,14 @@ mvn versions:commit
 ```
 
 # Technical Upgrade Info :
+# Java 21 Upgrade
+
+- Waltz now builds and runs on Java 21 (LTS). CI uses Temurin 21 and the Docker images are based on `tomcat:10.1-jre21-temurin`.
+- The source still uses the `javax.*` servlet API with Spring 5.3 / Jetty 10 (via Spark Java); the Tomcat 10 WAR (`waltz-web-jakarta.war`) is produced by the `jakartaee-migration` bytecode transformation in `waltz-web/pom.xml`.
+  A source-level migration to `jakarta.*` (Spring 6 / Jetty 11+) is a separate, larger piece of work and would be required for a future move beyond JDK 21 (e.g. JDK 25).
+- Developer Actions
+    - Ensure your local development environment and IDE are configured to use JDK 21.
+
 # Java 17 Upgrade
 
 - Waltz has been upgraded to run on Java 17, moving from Java 8.
