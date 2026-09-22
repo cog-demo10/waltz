@@ -613,8 +613,8 @@
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>3.2</version>
-                                    <message>"Waltz must be compiled using maven 3.2 or greater"</message>
+                                    <version>3.6.3</version>
+                                    <message>"Waltz must be compiled using maven 3.6.3 or greater"</message>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
                                     <version>${java.version}</version>
