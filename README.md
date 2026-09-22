@@ -35,7 +35,7 @@ Getting started
 
 ### Server
 
-- Java 17 (OpenJDK)
+- Java 21 (OpenJDK)
 - Embedded Jetty or WAR file (tested on Tomcat 10)
 - Spark framework (2.9.4) compatible with Tomcat 10
 - JDBC via JOOQ
